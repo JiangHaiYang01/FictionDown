@@ -75,7 +75,7 @@ def get_books(url, pageIndex):
             bookid))
         data.append({'index': len(data), 'bookname': str(bookname).replace("<span>", '').replace('</span>', ''),
                      "bookId": bookid})
-        indexs.append(len(data))
+        indexs.append(len(data) - 1)
     # print(pages)
     # print('pageIndex {} length={}'.format(pageIndex, len(pages)))
     if pageIndex > 1:
@@ -88,6 +88,11 @@ def get_books(url, pageIndex):
         if len(pages) > 1 and pageIndex < len(pages):
             pageIndex = pageIndex + 1
             get_books('http://www.biquge.com.cn/search.php?q={}&p={}'.format(want_book, pageIndex), pageIndex)
+        else:
+            if len(indexs) == 0:
+                print("没有可以下载的书本")
+                return
+            check_input(indexs, data)
 
 
 def check_input(indexs, data):
@@ -214,8 +219,8 @@ if __name__ == "__main__":
     indexs = []
 
     pool.setSize(0)
-    # want_book = raw_input("请输入想下载的小说名称：")
-    want_book = "斗罗大陆"
+    want_book = raw_input("请输入想下载的小说名称：")
+    # want_book = "斗罗大陆"
     url = 'http://www.biquge.com.cn/search.php?q={}&p={}'.format(want_book, 1)
     get_books(url, 1)
 
