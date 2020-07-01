@@ -4,4 +4,4 @@
 
 ## 使用方式
 
-请查看博客[](https://jianghaiyang01.github.io/posts/a09ce8d0/)
+[请查看博客](https://jianghaiyang01.github.io/posts/a09ce8d0/)
