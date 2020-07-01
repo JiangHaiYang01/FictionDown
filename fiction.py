@@ -8,10 +8,13 @@ import threading
 
 path = r'/Users/jhy/Desktop/小说/'  # 本地存放小说的路径
 
-slice = 20  # 分段下载 小于1 就不分段下载 会很慢
+slice = 60  # 分段下载 小于1 就不分段下载 会很慢
 want_book = ''
 data = []
 indexs = []
+
+# base_url = 'http://www.yb3.cc/web'
+base_url = 'http://www.biquge.com.cn'
 
 
 class SaveThread(object):
@@ -81,13 +84,13 @@ def get_books(url, pageIndex):
     if pageIndex > 1:
         if len(pages) > 1 and pageIndex < len(pages) - 1:
             pageIndex = pageIndex + 1
-            get_books('http://www.biquge.com.cn/search.php?q={}&p={}'.format(want_book, pageIndex), pageIndex)
+            get_books(base_url + '/search.php?q={}&p={}'.format(want_book, pageIndex), pageIndex)
         else:
             check_input(indexs, data)
     else:
         if len(pages) > 1 and pageIndex < len(pages):
             pageIndex = pageIndex + 1
-            get_books('http://www.biquge.com.cn/search.php?q={}&p={}'.format(want_book, pageIndex), pageIndex)
+            get_books(base_url + '/search.php?q={}&p={}'.format(want_book, pageIndex), pageIndex)
         else:
             if len(indexs) == 0:
                 print("没有可以下载的书本")
@@ -152,7 +155,7 @@ class MyThread(threading.Thread):  # 继承父类threading.Thread
 
 def start_downLoad(bookname, bookid):
     print('=====================正在下载【' + bookname + '】=====================')
-    url = 'http://www.biquge.com.cn{}'.format(bookid)
+    url = base_url + '{}'.format(bookid)
     print("下载地址:{}".format(url))
     titles = BeautifulSoup(requests.get(url, timeout=60).text, 'html.parser').select('div.box_con > div > dl > dd > a')
     if not os.path.exists(path):
@@ -180,7 +183,7 @@ def start_downLoad(bookname, bookid):
 def download_range(bookname, titles, start, end, index):
     isFirst = True
     for title in titles[start:end]:
-        titleurl = 'http://www.biquge.com.cn' + title.get('href')  # 章节url地址
+        titleurl = base_url + title.get('href')  # 章节url地址
         titlename = title.text  # 章节名称
         # print("章节名称:{} 下载地址:{}".format(titlename, titleurl))
         try:
@@ -220,8 +223,8 @@ if __name__ == "__main__":
 
     pool.setSize(0)
     want_book = raw_input("请输入想下载的小说名称：")
-    # want_book = "斗罗大陆"
-    url = 'http://www.biquge.com.cn/search.php?q={}&p={}'.format(want_book, 1)
+    # want_book = "仙逆"
+    url = base_url + '/search.php?q={}&p={}'.format(want_book, 1)
     get_books(url, 1)
 
     # pool.append({"index": 2, "content": "22222222222222\n"})
